@@ -38,19 +38,26 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .input-group {
+        .category {
             margin-bottom: 15px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+            padding-left: 20px;
         }
         label {
             display: block;
             font-weight: bold;
         }
-        input {
+        input[type="number"] {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -63,25 +70,35 @@
     <div class="middle-section">
         <div class="income">
             <h2>Income</h2>
-            <div class="input-group">
-                <label>Salary</label>
-                <input type="number" id="salary" value="0" oninput="calculateBudget()">
+            <div class="category">
+                <input type="checkbox" id="category1" onchange="toggleCategory('category1Fields', this)"> Category 1 (Salary & Incentives)
+                <div id="category1Fields" style="display:none;">
+                    <div class="input-group">
+                        <label>Salary</label>
+                        <input type="number" id="salary" value="0" oninput="calculateBudget()" disabled>
+                    </div>
+                    <div class="input-group">
+                        <label>Incentives</label>
+                        <input type="number" id="incentives" value="0" oninput="calculateBudget()" disabled>
+                    </div>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Incentives</label>
-                <input type="number" id="incentives" value="0" oninput="calculateBudget()">
-            </div>
-            <div class="input-group">
-                <label>Bonus</label>
-                <input type="number" id="bonus" value="0" oninput="calculateBudget()">
-            </div>
-            <div class="input-group">
-                <label>Allowance</label>
-                <input type="number" id="allowance" value="0" oninput="calculateBudget()">
-            </div>
-            <div class="input-group">
-                <label>Secondary Source</label>
-                <input type="number" id="secondarySource" value="0" oninput="calculateBudget()">
+            <div class="category">
+                <input type="checkbox" id="category2" onchange="toggleCategory('category2Fields', this)"> Category 2 (Bonus, Allowance & Secondary Source)
+                <div id="category2Fields" style="display:none;">
+                    <div class="input-group">
+                        <label>Bonus</label>
+                        <input type="number" id="bonus" value="0" oninput="calculateBudget()" disabled>
+                    </div>
+                    <div class="input-group">
+                        <label>Allowance</label>
+                        <input type="number" id="allowance" value="0" oninput="calculateBudget()" disabled>
+                    </div>
+                    <div class="input-group">
+                        <label>Secondary Source</label>
+                        <input type="number" id="secondarySource" value="0" oninput="calculateBudget()" disabled>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="expenses">
@@ -105,6 +122,23 @@
         </div>
     </div>
     <script>
+        function toggleCategory(categoryId, checkbox) {
+            const fieldsDiv = document.getElementById(categoryId);
+            const inputs = fieldsDiv.querySelectorAll('input[type="number"]');
+            
+            if (checkbox.checked) {
+                fieldsDiv.style.display = 'block';
+                inputs.forEach(input => input.removeAttribute('disabled'));
+            } else {
+                fieldsDiv.style.display = 'none';
+                inputs.forEach(input => {
+                    input.setAttribute('disabled', true);
+                    input.value = 0;
+                });
+                calculateBudget();
+            }
+        }
+
         function calculateBudget() {
             let income = [
                 parseFloat(document.getElementById('salary').value) || 0,
