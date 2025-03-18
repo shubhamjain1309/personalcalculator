@@ -4,133 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Budget Calculator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .top-section {
-            height: 30%;
-            background: #f8f9fa;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            font-size: 20px;
-            font-weight: bold;
-            padding: 20px;
-        }
-        .middle-section {
-            height: 70%;
-            display: flex;
-        }
-        .income, .expenses {
-            flex: 1;
-            padding: 20px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .category {
-            margin-bottom: 15px;
-        }
-        .input-group {
-            margin-bottom: 10px;
-            padding-left: 20px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        input[type="checkbox"] {
-            margin-right: 10px;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="top-section">
-        <div>Total Income: <span id="totalIncome">0</span></div>
-        <div>Total Expenses: <span id="totalExpenses">0</span></div>
-        <div>Balance: <span id="balance">0</span></div>
-    </div>
-    <div class="middle-section">
-        <div class="income">
-            <h2>Income</h2>
-            <div class="category">
-                <input type="checkbox" id="category1" onchange="toggleCategory('category1Fields', this)"> Category 1 (Salary & Incentives)
-                <div id="category1Fields" style="display:none;">
-                    <div class="input-group">
-                        <label>Salary</label>
-                        <input type="number" id="salary" value="0" oninput="calculateBudget()" disabled>
-                    </div>
-                    <div class="input-group">
-                        <label>Incentives</label>
-                        <input type="number" id="incentives" value="0" oninput="calculateBudget()" disabled>
-                    </div>
-                </div>
+<body class="bg-gray-100 flex flex-col h-screen">
+    <div class="top-section bg-blue-500 text-white text-center py-5">
+        <div class="grid grid-cols-3 gap-4 text-lg font-bold">
+            <div>
+                Monthly Income: <span id="monthlyIncome">0</span><br>
+                Yearly Income: <span id="yearlyIncome">0</span>
             </div>
+            <div>
+                Monthly Expenses: <span id="monthlyExpenses">0</span><br>
+                Yearly Expenses: <span id="yearlyExpenses">0</span>
+            </div>
+            <div>
+                Monthly Savings: <span id="monthlyBalance">0</span><br>
+                Yearly Savings: <span id="yearlyBalance">0</span>
+            </div>
+        </div>
+    </div>
+    <div class="middle-section flex flex-1 p-5">
+        <div class="income w-1/2 p-4 bg-white shadow-md rounded-lg mr-2">
+            <h2 class="text-xl font-bold mb-3">Income</h2>
             <div class="category">
-                <input type="checkbox" id="category2" onchange="toggleCategory('category2Fields', this)"> Category 2 (Bonus, Allowance & Secondary Source)
-                <div id="category2Fields" style="display:none;">
-                    <div class="input-group">
-                        <label>Bonus</label>
-                        <input type="number" id="bonus" value="0" oninput="calculateBudget()" disabled>
+                <input type="checkbox" id="category1" onchange="toggleCategory('category1Fields', this)"> <strong>Category 1 (Salary & Incentives)</strong>
+                <div id="category1Fields" class="hidden mt-2">
+                    <div class="input-group flex gap-2">
+                        <label>Salary</label>
+                        <input type="number" id="salary" value="0" oninput="calculateBudget()" disabled class="border p-1 rounded">
+                        <select id="salaryType" class="border p-1 rounded" onchange="calculateBudget()">
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
                     </div>
-                    <div class="input-group">
-                        <label>Allowance</label>
-                        <input type="number" id="allowance" value="0" oninput="calculateBudget()" disabled>
-                    </div>
-                    <div class="input-group">
-                        <label>Secondary Source</label>
-                        <input type="number" id="secondarySource" value="0" oninput="calculateBudget()" disabled>
+                    <div class="input-group flex gap-2">
+                        <label>Incentives</label>
+                        <input type="number" id="incentives" value="0" oninput="calculateBudget()" disabled class="border p-1 rounded">
+                        <select id="incentivesType" class="border p-1 rounded" onchange="calculateBudget()">
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="expenses">
-            <h2>Expenses</h2>
-            <div class="input-group">
+        <div class="expenses w-1/2 p-4 bg-white shadow-md rounded-lg">
+            <h2 class="text-xl font-bold mb-3">Expenses</h2>
+            <div class="input-group flex gap-2">
                 <label>House Rent</label>
-                <input type="number" id="houseRent" value="0" oninput="calculateBudget()">
-            </div>
-            <div class="input-group">
-                <label>Food</label>
-                <input type="number" id="food" value="0" oninput="calculateBudget()">
-            </div>
-            <div class="input-group">
-                <label>Travel</label>
-                <input type="number" id="travel" value="0" oninput="calculateBudget()">
-            </div>
-            <div class="input-group">
-                <label>Insurance</label>
-                <input type="number" id="insurance" value="0" oninput="calculateBudget()">
+                <input type="number" id="houseRent" value="0" oninput="calculateBudget()" class="border p-1 rounded">
+                <select id="houseRentType" class="border p-1 rounded" onchange="calculateBudget()">
+                    <option value="monthly">Monthly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
             </div>
         </div>
     </div>
     <script>
         function toggleCategory(categoryId, checkbox) {
             const fieldsDiv = document.getElementById(categoryId);
-            const inputs = fieldsDiv.querySelectorAll('input[type="number"]');
+            const inputs = fieldsDiv.querySelectorAll('input[type="number"], select');
             
             if (checkbox.checked) {
-                fieldsDiv.style.display = 'block';
+                fieldsDiv.classList.remove('hidden');
                 inputs.forEach(input => input.removeAttribute('disabled'));
             } else {
-                fieldsDiv.style.display = 'none';
+                fieldsDiv.classList.add('hidden');
                 inputs.forEach(input => {
                     input.setAttribute('disabled', true);
                     input.value = 0;
@@ -140,28 +79,25 @@
         }
 
         function calculateBudget() {
-            let income = [
-                parseFloat(document.getElementById('salary').value) || 0,
-                parseFloat(document.getElementById('incentives').value) || 0,
-                parseFloat(document.getElementById('bonus').value) || 0,
-                parseFloat(document.getElementById('allowance').value) || 0,
-                parseFloat(document.getElementById('secondarySource').value) || 0
-            ];
+            function getValue(id, typeId) {
+                let value = parseFloat(document.getElementById(id).value) || 0;
+                let type = document.getElementById(typeId).value;
+                return type === "yearly" ? value / 12 : value;
+            }
 
-            let expenses = [
-                parseFloat(document.getElementById('houseRent').value) || 0,
-                parseFloat(document.getElementById('food').value) || 0,
-                parseFloat(document.getElementById('travel').value) || 0,
-                parseFloat(document.getElementById('insurance').value) || 0
-            ];
+            let monthlyIncome = getValue('salary', 'salaryType') + getValue('incentives', 'incentivesType');
+            let yearlyIncome = monthlyIncome * 12;
+            let monthlyExpenses = getValue('houseRent', 'houseRentType');
+            let yearlyExpenses = monthlyExpenses * 12;
+            let monthlyBalance = monthlyIncome - monthlyExpenses;
+            let yearlyBalance = yearlyIncome - yearlyExpenses;
 
-            let totalIncome = income.reduce((a, b) => a + b, 0);
-            let totalExpenses = expenses.reduce((a, b) => a + b, 0);
-            let balance = totalIncome - totalExpenses;
-
-            document.getElementById('totalIncome').textContent = totalIncome;
-            document.getElementById('totalExpenses').textContent = totalExpenses;
-            document.getElementById('balance').textContent = balance;
+            document.getElementById('monthlyIncome').textContent = monthlyIncome.toFixed(2);
+            document.getElementById('yearlyIncome').textContent = yearlyIncome.toFixed(2);
+            document.getElementById('monthlyExpenses').textContent = monthlyExpenses.toFixed(2);
+            document.getElementById('yearlyExpenses').textContent = yearlyExpenses.toFixed(2);
+            document.getElementById('monthlyBalance').textContent = monthlyBalance.toFixed(2);
+            document.getElementById('yearlyBalance').textContent = yearlyBalance.toFixed(2);
         }
     </script>
 </body>
