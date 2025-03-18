@@ -1,0 +1,108 @@
+/* Main Layout */
+body {
+    background-color: #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Top Section */
+.top-section {
+    background-color: #3b82f6;
+    color: white;
+    text-align: center;
+    padding: 1.25rem 0;
+}
+
+.top-section .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+}
+
+/* Middle Section */
+.middle-section {
+    display: flex;
+    flex: 1;
+    padding: 1.25rem;
+}
+
+/* Income and Expenses Sections */
+.income, .expenses {
+    width: 50%;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+
+.income {
+    margin-right: 0.5rem;
+}
+
+/* Section Headers */
+h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+}
+
+/* Categories */
+.category {
+    margin-bottom: 1rem;
+}
+
+.category input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.category strong {
+    font-weight: bold;
+}
+
+/* Input Groups */
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.input-group label {
+    min-width: 150px;
+}
+
+/* Form Elements */
+input[type="number"], select {
+    border: 1px solid #e5e7eb;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+input[type="number"]:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+/* Hidden Fields */
+.hidden {
+    display: none;
+}
+
+/* Spacing */
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.space-y-2 > * + * {
+    margin-top: 0.5rem;
+} 

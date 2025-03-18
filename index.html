@@ -4,101 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Budget Calculator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100 flex flex-col h-screen">
-    <div class="top-section bg-blue-500 text-white text-center py-5">
-        <div class="grid grid-cols-3 gap-4 text-lg font-bold">
-            <div>
-                Monthly Income: <span id="monthlyIncome">0</span><br>
-                Yearly Income: <span id="yearlyIncome">0</span>
+<body>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Personal Budget Calculator</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Income Section -->
+            <div class="income p-4 border rounded">
+                <h2 class="text-xl font-semibold mb-4">Income</h2>
+                <!-- Categories will be added dynamically -->
             </div>
-            <div>
-                Monthly Expenses: <span id="monthlyExpenses">0</span><br>
-                Yearly Expenses: <span id="yearlyExpenses">0</span>
-            </div>
-            <div>
-                Monthly Savings: <span id="monthlyBalance">0</span><br>
-                Yearly Savings: <span id="yearlyBalance">0</span>
+            
+            <!-- Expenses Section -->
+            <div class="expenses p-4 border rounded">
+                <h2 class="text-xl font-semibold mb-4">Expenses</h2>
+                <!-- Categories will be added dynamically -->
             </div>
         </div>
-    </div>
-    <div class="middle-section flex flex-1 p-5">
-        <div class="income w-1/2 p-4 bg-white shadow-md rounded-lg mr-2">
-            <h2 class="text-xl font-bold mb-3">Income</h2>
-            <div class="category">
-                <input type="checkbox" id="category1" onchange="toggleCategory('category1Fields', this)"> <strong>Category 1 (Salary & Incentives)</strong>
-                <div id="category1Fields" class="hidden mt-2">
-                    <div class="input-group flex gap-2">
-                        <label>Salary</label>
-                        <input type="number" id="salary" value="0" oninput="calculateBudget()" disabled class="border p-1 rounded">
-                        <select id="salaryType" class="border p-1 rounded" onchange="calculateBudget()">
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-                    <div class="input-group flex gap-2">
-                        <label>Incentives</label>
-                        <input type="number" id="incentives" value="0" oninput="calculateBudget()" disabled class="border p-1 rounded">
-                        <select id="incentivesType" class="border p-1 rounded" onchange="calculateBudget()">
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
+        
+        <!-- Summary Section -->
+        <div class="summary mt-4 p-4 border rounded">
+            <h2 class="text-xl font-semibold mb-4">Summary</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="summary-item">
+                    <h3 class="font-semibold">Monthly Income</h3>
+                    <p id="monthlyIncome">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <h3 class="font-semibold">Yearly Income</h3>
+                    <p id="yearlyIncome">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <h3 class="font-semibold">Monthly Expenses</h3>
+                    <p id="monthlyExpenses">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <h3 class="font-semibold">Yearly Expenses</h3>
+                    <p id="yearlyExpenses">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <h3 class="font-semibold">Monthly Balance</h3>
+                    <p id="monthlyBalance">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <h3 class="font-semibold">Yearly Balance</h3>
+                    <p id="yearlyBalance">0.00</p>
                 </div>
             </div>
         </div>
-        <div class="expenses w-1/2 p-4 bg-white shadow-md rounded-lg">
-            <h2 class="text-xl font-bold mb-3">Expenses</h2>
-            <div class="input-group flex gap-2">
-                <label>House Rent</label>
-                <input type="number" id="houseRent" value="0" oninput="calculateBudget()" class="border p-1 rounded">
-                <select id="houseRentType" class="border p-1 rounded" onchange="calculateBudget()">
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                </select>
-            </div>
-        </div>
     </div>
-    <script>
-        function toggleCategory(categoryId, checkbox) {
-            const fieldsDiv = document.getElementById(categoryId);
-            const inputs = fieldsDiv.querySelectorAll('input[type="number"], select');
-            
-            if (checkbox.checked) {
-                fieldsDiv.classList.remove('hidden');
-                inputs.forEach(input => input.removeAttribute('disabled'));
-            } else {
-                fieldsDiv.classList.add('hidden');
-                inputs.forEach(input => {
-                    input.setAttribute('disabled', true);
-                    input.value = 0;
-                });
-                calculateBudget();
-            }
-        }
-
-        function calculateBudget() {
-            function getValue(id, typeId) {
-                let value = parseFloat(document.getElementById(id).value) || 0;
-                let type = document.getElementById(typeId).value;
-                return type === "yearly" ? value / 12 : value;
-            }
-
-            let monthlyIncome = getValue('salary', 'salaryType') + getValue('incentives', 'incentivesType');
-            let yearlyIncome = monthlyIncome * 12;
-            let monthlyExpenses = getValue('houseRent', 'houseRentType');
-            let yearlyExpenses = monthlyExpenses * 12;
-            let monthlyBalance = monthlyIncome - monthlyExpenses;
-            let yearlyBalance = yearlyIncome - yearlyExpenses;
-
-            document.getElementById('monthlyIncome').textContent = monthlyIncome.toFixed(2);
-            document.getElementById('yearlyIncome').textContent = yearlyIncome.toFixed(2);
-            document.getElementById('monthlyExpenses').textContent = monthlyExpenses.toFixed(2);
-            document.getElementById('yearlyExpenses').textContent = yearlyExpenses.toFixed(2);
-            document.getElementById('monthlyBalance').textContent = monthlyBalance.toFixed(2);
-            document.getElementById('yearlyBalance').textContent = yearlyBalance.toFixed(2);
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
