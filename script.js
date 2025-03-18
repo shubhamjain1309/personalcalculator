@@ -149,9 +149,36 @@ function createCategoryFields(categoryId, category) {
         input.type = 'number';
         input.id = field.id;
         input.value = '0';
-        input.oninput = calculateBudget;
         input.disabled = true;
         input.className = 'border p-1 rounded';
+        
+        // Handle focus event
+        input.onfocus = function() {
+            if (this.value === '0') {
+                this.value = '';
+            }
+        };
+        
+        // Handle blur event
+        input.onblur = function() {
+            if (this.value === '') {
+                this.value = '0';
+                calculateBudget();
+            }
+        };
+        
+        // Handle input event
+        input.oninput = function() {
+            // Remove leading zeros
+            if (this.value.length > 1 && this.value[0] === '0') {
+                this.value = this.value.replace(/^0+/, '');
+            }
+            // Ensure value is not negative
+            if (this.value < 0) {
+                this.value = '0';
+            }
+            calculateBudget();
+        };
         
         const select = document.createElement('select');
         select.id = `${field.id}Type`;
@@ -185,12 +212,19 @@ function toggleCategory(categoryId, checkbox) {
     
     if (checkbox.checked) {
         fieldsDiv.classList.remove('hidden');
-        inputs.forEach(input => input.removeAttribute('disabled'));
+        inputs.forEach(input => {
+            input.removeAttribute('disabled');
+            if (input.type === 'number') {
+                input.value = '0';
+            }
+        });
     } else {
         fieldsDiv.classList.add('hidden');
         inputs.forEach(input => {
             input.setAttribute('disabled', true);
-            input.value = 0;
+            if (input.type === 'number') {
+                input.value = '0';
+            }
         });
         calculateBudget();
     }
@@ -229,13 +263,20 @@ function calculateBudget() {
     let monthlyBalance = monthlyIncome - monthlyExpenses;
     let yearlyBalance = yearlyIncome - yearlyExpenses;
     
-    // Update display
-    document.getElementById('monthlyIncome').textContent = monthlyIncome.toFixed(2);
-    document.getElementById('yearlyIncome').textContent = yearlyIncome.toFixed(2);
-    document.getElementById('monthlyExpenses').textContent = monthlyExpenses.toFixed(2);
-    document.getElementById('yearlyExpenses').textContent = yearlyExpenses.toFixed(2);
-    document.getElementById('monthlyBalance').textContent = monthlyBalance.toFixed(2);
-    document.getElementById('yearlyBalance').textContent = yearlyBalance.toFixed(2);
+    // Update display with proper formatting
+    function formatCurrency(value) {
+        return value.toLocaleString('en-IN', {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+        });
+    }
+    
+    document.getElementById('monthlyIncome').textContent = formatCurrency(monthlyIncome);
+    document.getElementById('yearlyIncome').textContent = formatCurrency(yearlyIncome);
+    document.getElementById('monthlyExpenses').textContent = formatCurrency(monthlyExpenses);
+    document.getElementById('yearlyExpenses').textContent = formatCurrency(yearlyExpenses);
+    document.getElementById('monthlyBalance').textContent = formatCurrency(monthlyBalance);
+    document.getElementById('yearlyBalance').textContent = formatCurrency(yearlyBalance);
 }
 
 // Initialize the calculator
