@@ -1,123 +1,117 @@
-// Configuration object for all categories and their fields
+// Configuration object for categories
 const categories = {
-    primaryIncome: {
-        title: 'Primary Income Sources',
-        fields: [
-            { id: 'salary', label: 'Salary/Wages' },
-            { id: 'bonuses', label: 'Bonuses & Incentives' },
-            { id: 'overtime', label: 'Overtime Pay' },
-            { id: 'commission', label: 'Commission' }
-        ]
+    income: {
+        primary: {
+            name: "Primary Income Sources",
+            fields: [
+                { name: "Salary / Wages", type: "number" },
+                { name: "Bonuses & Incentives", type: "number" }
+            ]
+        },
+        business: {
+            name: "Business & Freelancing",
+            fields: [
+                { name: "Freelancing Income", type: "number" },
+                { name: "Part-time Jobs", type: "number" },
+                { name: "Side Hustles", type: "number" }
+            ]
+        }
     },
-    businessIncome: {
-        title: 'Business & Freelancing',
-        fields: [
-            { id: 'businessProfits', label: 'Business Profits' },
-            { id: 'freelancing', label: 'Freelancing Income' },
-            { id: 'partTime', label: 'Part-time Jobs' },
-            { id: 'sideHustles', label: 'Side Hustles' }
-        ]
+    expenses: {
+        housing: {
+            name: "Housing & Living Expenses",
+            fields: [
+                { name: "House Rent / Home EMI / PG Rent", type: "number" },
+                { name: "Home Insurance", type: "number" },
+                { name: "Utilities (Electricity, Water, Gas)", type: "number" },
+                { name: "Internet & Phone Bills", type: "number" },
+                { name: "Home Maintenance", type: "number" }
+            ]
+        },
+        food: {
+            name: "Food & Daily Essentials",
+            fields: [
+                { name: "Groceries", type: "number" },
+                { name: "Dining Out", type: "number" },
+                { name: "Snacks & Beverages", type: "number" },
+                { name: "Household Items", type: "number" }
+            ]
+        },
+        transport: {
+            name: "Transportation & Vehicle Expenses",
+            fields: [
+                { name: "Vehicle Loan", type: "number" },
+                { name: "Fuel", type: "number" },
+                { name: "Car Insurance", type: "number" },
+                { name: "Vehicle Maintenance", type: "number" },
+                { name: "Public Transport", type: "number" }
+            ]
+        },
+        family: {
+            name: "Family & Childcare",
+            fields: [
+                { name: "School Fees", type: "number" },
+                { name: "Tuition", type: "number" },
+                { name: "Daycare", type: "number" },
+                { name: "Child Activities", type: "number" }
+            ]
+        },
+        healthcare: {
+            name: "Healthcare & Insurance",
+            fields: [
+                { name: "Health Insurance", type: "number" },
+                { name: "Medical Checkups", type: "number" },
+                { name: "Medicines", type: "number" },
+                { name: "Dental Care", type: "number" }
+            ]
+        },
+        debt: {
+            name: "Debt Repayments & Financial Obligations",
+            fields: [
+                { name: "Credit Card Bills", type: "number" },
+                { name: "Personal Loan EMI", type: "number" },
+                { name: "Education Loan EMI", type: "number" },
+                { name: "Other Loans", type: "number" }
+            ]
+        },
+        personal: {
+            name: "Personal & Lifestyle",
+            fields: [
+                { name: "Clothing", type: "number" },
+                { name: "Salon & Grooming", type: "number" },
+                { name: "Gym Membership", type: "number" },
+                { name: "Personal Care Products", type: "number" }
+            ]
+        },
+        entertainment: {
+            name: "Entertainment & Leisure",
+            fields: [
+                { name: "Movies & Shows", type: "number" },
+                { name: "Vacations", type: "number" },
+                { name: "Social Gatherings", type: "number" },
+                { name: "Hobbies", type: "number" }
+            ]
+        },
+        miscellaneous: {
+            name: "Miscellaneous & Unexpected Expenses",
+            fields: [
+                { name: "Gifts", type: "number" },
+                { name: "Charity", type: "number" },
+                { name: "Emergency Fund", type: "number" },
+                { name: "Other Expenses", type: "number" }
+            ]
+        }
     },
-    housingExpenses: {
-        title: 'Housing & Living Expenses',
-        fields: [
-            { id: 'rentMortgage', label: 'Rent / Mortgage' },
-            { id: 'propertyTax', label: 'Property Tax' },
-            { id: 'homeInsurance', label: 'Home Insurance' },
-            { id: 'electricity', label: 'Electricity Bill' },
-            { id: 'waterBill', label: 'Water Bill' },
-            { id: 'gasBill', label: 'Gas Bill' },
-            { id: 'internet', label: 'Internet & Wi-Fi' },
-            { id: 'streaming', label: 'Cable / Streaming Services' },
-            { id: 'maintenance', label: 'Home Maintenance & Repairs' },
-            { id: 'security', label: 'Home Security Services' }
-        ]
-    },
-    foodExpenses: {
-        title: 'Food & Daily Essentials',
-        fields: [
-            { id: 'groceries', label: 'Groceries' },
-            { id: 'dining', label: 'Dining Out & Takeout' },
-            { id: 'snacks', label: 'Snacks & Beverages' },
-            { id: 'specialOccasions', label: 'Special Occasions' }
-        ]
-    },
-    transportExpenses: {
-        title: 'Transportation & Vehicle Expenses',
-        fields: [
-            { id: 'carLoan', label: 'Car Loan / Lease Payment' },
-            { id: 'fuel', label: 'Fuel / Petrol / Diesel' },
-            { id: 'carInsurance', label: 'Car Insurance' },
-            { id: 'carMaintenance', label: 'Car Maintenance & Repairs' },
-            { id: 'publicTransport', label: 'Public Transport' },
-            { id: 'rideSharing', label: 'Ride-Sharing' },
-            { id: 'parking', label: 'Parking Fees & Tolls' }
-        ]
-    },
-    familyExpenses: {
-        title: 'Family & Childcare',
-        fields: [
-            { id: 'schoolFees', label: 'Children\'s School Fees' },
-            { id: 'tuition', label: 'Tuition & Coaching Classes' },
-            { id: 'daycare', label: 'Daycare / Nanny Services' },
-            { id: 'kidsClothing', label: 'Kids\' Clothing & Accessories' },
-            { id: 'kidsEntertainment', label: 'Toys & Entertainment for Kids' }
-        ]
-    },
-    healthcareExpenses: {
-        title: 'Healthcare & Insurance',
-        fields: [
-            { id: 'healthInsurance', label: 'Health Insurance Premiums' },
-            { id: 'lifeInsurance', label: 'Life Insurance Premiums' },
-            { id: 'medicalCheckups', label: 'Medical Checkups & Consultations' },
-            { id: 'medicines', label: 'Medicines & Supplements' },
-            { id: 'emergencyMedical', label: 'Emergency Medical Expenses' },
-            { id: 'dentalVision', label: 'Dental & Vision Care' }
-        ]
-    },
-    debtExpenses: {
-        title: 'Debt Repayments & Financial Obligations',
-        fields: [
-            { id: 'creditCard', label: 'Credit Card Bills' },
-            { id: 'personalLoan', label: 'Personal Loan EMI' },
-            { id: 'studentLoan', label: 'Student Loan EMI' }
-        ]
-    },
-    savingsExpenses: {
-        title: 'Savings & Investments',
-        fields: [
-            { id: 'retirement', label: 'Retirement Savings' },
-            { id: 'investments', label: 'Stock / Mutual Fund Investments' },
-            { id: 'emergencyFund', label: 'Emergency Fund Savings' },
-            { id: 'fixedDeposits', label: 'Fixed Deposits / Recurring Deposits' }
-        ]
-    },
-    personalExpenses: {
-        title: 'Personal & Lifestyle',
-        fields: [
-            { id: 'clothing', label: 'Clothing & Footwear' },
-            { id: 'grooming', label: 'Salon & Grooming' },
-            { id: 'fitness', label: 'Gym Membership / Yoga Classes' },
-            { id: 'hobbies', label: 'Hobbies & Subscriptions' }
-        ]
-    },
-    entertainmentExpenses: {
-        title: 'Entertainment & Leisure',
-        fields: [
-            { id: 'entertainment', label: 'Movies & Concerts' },
-            { id: 'travel', label: 'Vacations & Travel' },
-            { id: 'social', label: 'Social Gatherings & Outings' },
-            { id: 'tech', label: 'Gaming, Gadgets & Tech Upgrades' }
-        ]
-    },
-    miscExpenses: {
-        title: 'Miscellaneous & Unexpected Expenses',
-        fields: [
-            { id: 'gifts', label: 'Gifts for Family & Friends' },
-            { id: 'charity', label: 'Charity & Donations' },
-            { id: 'petCare', label: 'Pet Care' },
-            { id: 'unexpected', label: 'Unexpected Expenses' }
-        ]
+    savings: {
+        investments: {
+            name: "Investments",
+            fields: [
+                { name: "Retirement Savings", type: "number" },
+                { name: "Stock Investments", type: "number" },
+                { name: "Mutual Funds", type: "number" },
+                { name: "Fixed Deposits", type: "number" }
+            ]
+        }
     }
 };
 
@@ -126,28 +120,59 @@ function createCategoryFields(categoryId, category) {
     const categoryDiv = document.createElement('div');
     categoryDiv.className = 'category mb-4';
     
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'category-header flex items-center justify-between cursor-pointer p-2 hover:bg-gray-50 rounded-lg';
+    
+    const leftDiv = document.createElement('div');
+    leftDiv.className = 'flex items-center';
+    
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = categoryId;
-    checkbox.onchange = () => toggleCategory(`${categoryId}Fields`, checkbox);
+    checkbox.className = 'mr-2';
+    checkbox.onchange = (e) => {
+        e.stopPropagation();
+        toggleCategory(`${categoryId}Fields`, checkbox);
+    };
     
     const title = document.createElement('strong');
-    title.textContent = category.title;
+    title.textContent = category.name;
+    
+    leftDiv.appendChild(checkbox);
+    leftDiv.appendChild(title);
+    
+    const rightDiv = document.createElement('div');
+    rightDiv.className = 'flex items-center gap-4';
+    
+    const totalSpan = document.createElement('span');
+    totalSpan.id = `${categoryId}Total`;
+    totalSpan.className = 'text-sm text-gray-600';
+    totalSpan.textContent = '₹0.00';
+    
+    const toggleIcon = document.createElement('span');
+    toggleIcon.className = 'toggle-icon text-gray-400';
+    toggleIcon.innerHTML = '▼';
+    
+    rightDiv.appendChild(totalSpan);
+    rightDiv.appendChild(toggleIcon);
+    
+    headerDiv.appendChild(leftDiv);
+    headerDiv.appendChild(rightDiv);
     
     const fieldsDiv = document.createElement('div');
     fieldsDiv.id = `${categoryId}Fields`;
-    fieldsDiv.className = 'hidden mt-2 space-y-2';
+    fieldsDiv.className = 'hidden mt-2 space-y-2 pl-6';
     
     category.fields.forEach(field => {
         const inputGroup = document.createElement('div');
         inputGroup.className = 'input-group flex gap-2';
         
         const label = document.createElement('label');
-        label.textContent = field.label;
+        label.textContent = field.name;
         
         const input = document.createElement('input');
         input.type = 'number';
-        input.id = field.id;
+        input.id = field.name;
         input.value = '0';
         input.disabled = true;
         input.className = 'border p-1 rounded';
@@ -181,7 +206,7 @@ function createCategoryFields(categoryId, category) {
         };
         
         const select = document.createElement('select');
-        select.id = `${field.id}Type`;
+        select.id = `${field.name}Type`;
         select.className = 'border p-1 rounded';
         select.onchange = calculateBudget;
         
@@ -198,14 +223,29 @@ function createCategoryFields(categoryId, category) {
         fieldsDiv.appendChild(inputGroup);
     });
     
-    categoryDiv.appendChild(checkbox);
-    categoryDiv.appendChild(title);
+    // Add click handler for the header
+    headerDiv.onclick = (e) => {
+        if (e.target !== checkbox) {
+            toggleCategoryVisibility(`${categoryId}Fields`, toggleIcon);
+        }
+    };
+    
+    categoryDiv.appendChild(headerDiv);
     categoryDiv.appendChild(fieldsDiv);
     
     return categoryDiv;
 }
 
 // Function to toggle category visibility
+function toggleCategoryVisibility(categoryId, toggleIcon) {
+    const fieldsDiv = document.getElementById(categoryId);
+    const isHidden = fieldsDiv.classList.contains('hidden');
+    
+    fieldsDiv.classList.toggle('hidden');
+    toggleIcon.textContent = isHidden ? '▼' : '▶';
+}
+
+// Function to toggle category enabled state
 function toggleCategory(categoryId, checkbox) {
     const fieldsDiv = document.getElementById(categoryId);
     const inputs = fieldsDiv.querySelectorAll('input[type="number"], select');
@@ -230,6 +270,15 @@ function toggleCategory(categoryId, checkbox) {
     }
 }
 
+// Function to calculate category total
+function calculateCategoryTotal(categoryId, category) {
+    let total = 0;
+    category.fields.forEach(field => {
+        total += getValue(field.name, `${field.name}Type`);
+    });
+    return total;
+}
+
 // Function to get value from input field
 function getValue(id, typeId) {
     let value = parseFloat(document.getElementById(id).value) || 0;
@@ -241,27 +290,34 @@ function getValue(id, typeId) {
 function calculateBudget() {
     let monthlyIncome = 0;
     let monthlyExpenses = 0;
+    let monthlySavings = 0;
     
     // Calculate income
-    ['primaryIncome', 'businessIncome'].forEach(categoryId => {
-        categories[categoryId].fields.forEach(field => {
-            monthlyIncome += getValue(field.id, `${field.id}Type`);
-        });
+    Object.entries(categories.income).forEach(([key, category]) => {
+        const categoryTotal = calculateCategoryTotal(key, category);
+        monthlyIncome += categoryTotal;
+        document.getElementById(`${key}Total`).textContent = `₹${formatCurrency(categoryTotal)}`;
     });
     
-    // Calculate expenses
-    Object.keys(categories).forEach(categoryId => {
-        if (categoryId !== 'primaryIncome' && categoryId !== 'businessIncome') {
-            categories[categoryId].fields.forEach(field => {
-                monthlyExpenses += getValue(field.id, `${field.id}Type`);
-            });
-        }
+    // Calculate expenses (excluding savings)
+    Object.entries(categories.expenses).forEach(([key, category]) => {
+        const categoryTotal = calculateCategoryTotal(key, category);
+        monthlyExpenses += categoryTotal;
+        document.getElementById(`${key}Total`).textContent = `₹${formatCurrency(categoryTotal)}`;
+    });
+    
+    // Calculate savings
+    Object.entries(categories.savings).forEach(([key, category]) => {
+        const categoryTotal = calculateCategoryTotal(key, category);
+        monthlySavings += categoryTotal;
+        document.getElementById(`${key}Total`).textContent = `₹${formatCurrency(categoryTotal)}`;
     });
     
     let yearlyIncome = monthlyIncome * 12;
     let yearlyExpenses = monthlyExpenses * 12;
-    let monthlyBalance = monthlyIncome - monthlyExpenses;
-    let yearlyBalance = yearlyIncome - yearlyExpenses;
+    let yearlySavings = monthlySavings * 12;
+    let monthlyBalance = monthlyIncome - monthlyExpenses - monthlySavings;
+    let yearlyBalance = yearlyIncome - yearlyExpenses - yearlySavings;
     
     // Update display with proper formatting
     function formatCurrency(value) {
@@ -275,6 +331,8 @@ function calculateBudget() {
     document.getElementById('yearlyIncome').textContent = formatCurrency(yearlyIncome);
     document.getElementById('monthlyExpenses').textContent = formatCurrency(monthlyExpenses);
     document.getElementById('yearlyExpenses').textContent = formatCurrency(yearlyExpenses);
+    document.getElementById('monthlySavings').textContent = formatCurrency(monthlySavings);
+    document.getElementById('yearlySavings').textContent = formatCurrency(yearlySavings);
     document.getElementById('monthlyBalance').textContent = formatCurrency(monthlyBalance);
     document.getElementById('yearlyBalance').textContent = formatCurrency(yearlyBalance);
 }
@@ -283,16 +341,20 @@ function calculateBudget() {
 document.addEventListener('DOMContentLoaded', () => {
     const incomeSection = document.querySelector('.income');
     const expensesSection = document.querySelector('.expenses');
+    const savingsSection = document.querySelector('.savings');
     
     // Add income categories
-    ['primaryIncome', 'businessIncome'].forEach(categoryId => {
-        incomeSection.appendChild(createCategoryFields(categoryId, categories[categoryId]));
+    Object.entries(categories.income).forEach(([key, category]) => {
+        incomeSection.appendChild(createCategoryFields(key, category));
     });
     
     // Add expense categories
-    Object.keys(categories).forEach(categoryId => {
-        if (categoryId !== 'primaryIncome' && categoryId !== 'businessIncome') {
-            expensesSection.appendChild(createCategoryFields(categoryId, categories[categoryId]));
-        }
+    Object.entries(categories.expenses).forEach(([key, category]) => {
+        expensesSection.appendChild(createCategoryFields(key, category));
+    });
+    
+    // Add savings categories
+    Object.entries(categories.savings).forEach(([key, category]) => {
+        savingsSection.appendChild(createCategoryFields(key, category));
     });
 }); 
