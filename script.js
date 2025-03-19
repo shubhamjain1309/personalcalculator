@@ -165,11 +165,31 @@ function createCategoryFields(categoryId, category) {
     
     category.fields.forEach(field => {
         const inputGroup = document.createElement('div');
-        inputGroup.className = 'input-group flex gap-2';
+        inputGroup.className = 'input-group';
+        
+        // Create header div for label and select
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'input-group-header';
         
         const label = document.createElement('label');
         label.textContent = field.name;
         
+        const select = document.createElement('select');
+        select.id = `${field.name}Type`;
+        select.className = 'border p-1 rounded';
+        select.onchange = calculateBudget;
+        
+        ['Monthly', 'Yearly'].forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.toLowerCase();
+            opt.textContent = option;
+            select.appendChild(opt);
+        });
+        
+        headerDiv.appendChild(label);
+        headerDiv.appendChild(select);
+        
+        // Create input field
         const input = document.createElement('input');
         input.type = 'number';
         input.id = field.name;
@@ -205,21 +225,8 @@ function createCategoryFields(categoryId, category) {
             calculateBudget();
         };
         
-        const select = document.createElement('select');
-        select.id = `${field.name}Type`;
-        select.className = 'border p-1 rounded';
-        select.onchange = calculateBudget;
-        
-        ['Monthly', 'Yearly'].forEach(option => {
-            const opt = document.createElement('option');
-            opt.value = option.toLowerCase();
-            opt.textContent = option;
-            select.appendChild(opt);
-        });
-        
-        inputGroup.appendChild(label);
+        inputGroup.appendChild(headerDiv);
         inputGroup.appendChild(input);
-        inputGroup.appendChild(select);
         fieldsDiv.appendChild(inputGroup);
     });
     
