@@ -362,4 +362,86 @@ footer span {
     .summary-card .amount {
         font-size: 1.5rem;
     }
+}
+
+/* Analysis Dashboard */
+.analysis-dashboard {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+/* Tab Styles */
+.tab-button {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.tab-button.active {
+    color: #2563eb;
+    border-bottom-color: #2563eb !important;
+}
+
+.tab-button:hover {
+    color: #1d4ed8;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.chart-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.chart-container canvas {
+    max-width: 100%;
+    max-height: 250px;
+    margin: 0 auto;
+}
+
+#generateAnalysis {
+    transition: all 0.2s ease;
+}
+
+#generateAnalysis:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#generateAnalysis.active {
+    background-color: #2563eb;
+}
+
+/* Responsive adjustments for charts */
+@media (max-width: 768px) {
+    .chart-container {
+        min-height: 250px;
+        padding: 1rem;
+    }
+    
+    .chart-container canvas {
+        max-height: 200px;
+    }
 } 

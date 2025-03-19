@@ -127,6 +127,368 @@ const categories = {
     }
 };
 
+// Add chart variables at the top of the file
+let budgetDistributionChart = null;
+let incomePieChart = null;
+let incomeBarChart = null;
+let expensePieChart = null;
+let expenseBarChart = null;
+
+// Function to handle tab switching
+function switchTab(tabId) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+        if (button.dataset.tab === tabId) {
+            button.classList.add('active');
+        }
+    });
+    
+    // Update tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+        if (pane.id === tabId) {
+            pane.classList.add('active');
+        }
+    });
+
+    // Regenerate charts for the active tab
+    if (document.getElementById('generateAnalysis').classList.contains('active')) {
+        switch(tabId) {
+            case 'overview':
+                createBudgetDistributionChart();
+                break;
+            case 'income':
+                createIncomeCharts();
+                break;
+            case 'expenses':
+                createExpenseCharts();
+                break;
+        }
+    }
+}
+
+// Function to create budget distribution chart
+function createBudgetDistributionChart() {
+    const ctx = document.getElementById('budgetDistributionChart').getContext('2d');
+    if (budgetDistributionChart) {
+        budgetDistributionChart.destroy();
+    }
+    
+    const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').textContent.replace(/,/g, ''));
+    const monthlySavings = parseFloat(document.getElementById('monthlySavings').textContent.replace(/,/g, ''));
+    
+    // Create data even if one value is zero
+    const data = [monthlyExpenses, monthlySavings];
+    const labels = ['Expenses', 'Savings'];
+    
+    // If both values are zero, show a single slice with 100%
+    if (monthlyExpenses === 0 && monthlySavings === 0) {
+        data.push(1);
+        labels.push('No Data');
+    }
+    
+    budgetDistributionChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: ['#EF4444', '#10B981', '#6B7280'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: {
+                            size: 12
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.label === 'No Data') {
+                                return 'No data available';
+                            }
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ₹${value.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Function to create income charts
+function createIncomeCharts() {
+    // Get income data
+    const incomeData = {};
+    Object.entries(categories.income).forEach(([categoryId, category]) => {
+        const total = calculateCategoryTotal(categoryId, category);
+        if (total > 0) {
+            incomeData[category.name] = total;
+        }
+    });
+
+    // If no income data, add a placeholder
+    if (Object.keys(incomeData).length === 0) {
+        incomeData['No Income Data'] = 1;
+    }
+
+    // Colors for charts
+    const colors = [
+        '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
+        '#EC4899', '#14B8A6', '#F97316', '#6366F1', '#D946EF'
+    ];
+
+    // Create Income Pie Chart
+    const pieCtx = document.getElementById('incomePieChart').getContext('2d');
+    if (incomePieChart) {
+        incomePieChart.destroy();
+    }
+    incomePieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(incomeData),
+            datasets: [{
+                data: Object.values(incomeData),
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: {
+                            size: 12
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.label === 'No Income Data') {
+                                return 'No income data available';
+                            }
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ₹${value.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Create Income Bar Chart
+    const barCtx = document.getElementById('incomeBarChart').getContext('2d');
+    if (incomeBarChart) {
+        incomeBarChart.destroy();
+    }
+    incomeBarChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(incomeData),
+            datasets: [{
+                label: 'Monthly Income',
+                data: Object.values(incomeData),
+                backgroundColor: colors[0],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.label === 'No Income Data') {
+                                return 'No income data available';
+                            }
+                            return `₹${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString();
+                        },
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Function to create expense charts
+function createExpenseCharts() {
+    // Get expense data
+    const expenseData = {};
+    Object.entries(categories.expenses).forEach(([categoryId, category]) => {
+        const total = calculateCategoryTotal(categoryId, category);
+        if (total > 0) {
+            expenseData[category.name] = total;
+        }
+    });
+
+    // If no expense data, add a placeholder
+    if (Object.keys(expenseData).length === 0) {
+        expenseData['No Expense Data'] = 1;
+    }
+
+    // Colors for charts
+    const colors = [
+        '#EF4444', '#F97316', '#F59E0B', '#10B981', '#3B82F6',
+        '#6366F1', '#8B5CF6', '#D946EF', '#EC4899', '#14B8A6'
+    ];
+
+    // Create Expense Pie Chart
+    const pieCtx = document.getElementById('expensePieChart').getContext('2d');
+    if (expensePieChart) {
+        expensePieChart.destroy();
+    }
+    expensePieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(expenseData),
+            datasets: [{
+                data: Object.values(expenseData),
+                backgroundColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: {
+                            size: 12
+                        },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.label === 'No Expense Data') {
+                                return 'No expense data available';
+                            }
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ₹${value.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Create Expense Bar Chart
+    const barCtx = document.getElementById('expenseBarChart').getContext('2d');
+    if (expenseBarChart) {
+        expenseBarChart.destroy();
+    }
+    expenseBarChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(expenseData),
+            datasets: [{
+                label: 'Monthly Expenses',
+                data: Object.values(expenseData),
+                backgroundColor: colors[0],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.label === 'No Expense Data') {
+                                return 'No expense data available';
+                            }
+                            return `₹${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString();
+                        },
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Function to generate all charts
+function generateAnalysis() {
+    createBudgetDistributionChart();
+    createIncomeCharts();
+    createExpenseCharts();
+    document.getElementById('generateAnalysis').classList.add('active');
+}
+
 // Function to create input fields for a category
 function createCategoryFields(categoryId, category) {
     const categoryDiv = document.createElement('div');
@@ -353,6 +715,22 @@ function calculateBudget() {
     document.getElementById('yearlySavings').textContent = formatCurrency(yearlySavings);
     document.getElementById('monthlyBalance').textContent = formatCurrency(monthlyBalance);
     document.getElementById('yearlyBalance').textContent = formatCurrency(yearlyBalance);
+
+    // Update charts if they exist
+    if (document.getElementById('generateAnalysis').classList.contains('active')) {
+        const activeTab = document.querySelector('.tab-button.active').dataset.tab;
+        switch(activeTab) {
+            case 'overview':
+                createBudgetDistributionChart();
+                break;
+            case 'income':
+                createIncomeCharts();
+                break;
+            case 'expenses':
+                createExpenseCharts();
+                break;
+        }
+    }
 }
 
 // Initialize the calculator
@@ -375,4 +753,14 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.entries(categories.savings).forEach(([key, category]) => {
         savingsSection.appendChild(createCategoryFields(key, category));
     });
+
+    // Add event listeners for tabs
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+            switchTab(button.dataset.tab);
+        });
+    });
+
+    // Add event listener for the Generate Analysis button
+    document.getElementById('generateAnalysis').addEventListener('click', generateAnalysis);
 }); 
