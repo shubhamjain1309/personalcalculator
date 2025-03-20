@@ -134,6 +134,55 @@ let incomeBarChart = null;
 let expensePieChart = null;
 let expenseBarChart = null;
 
+// Add these functions at the top of the file, after the chart variables
+function saveToLocalStorage() {
+    const savedData = {
+        inputs: {},
+        chartState: document.getElementById('generateAnalysis').classList.contains('active'),
+        activeTab: document.querySelector('.tab-button.active')?.dataset.tab || 'overview'
+    };
+
+    // Save all input values
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        savedData.inputs[input.id] = {
+            value: input.value,
+            frequency: input.closest('.input-group').querySelector('select').value
+        };
+    });
+
+    localStorage.setItem('budgetCalculatorData', JSON.stringify(savedData));
+}
+
+function loadFromLocalStorage() {
+    const savedData = localStorage.getItem('budgetCalculatorData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        
+        // Restore input values
+        Object.entries(data.inputs).forEach(([inputId, inputData]) => {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = inputData.value;
+                const select = input.closest('.input-group').querySelector('select');
+                if (select) {
+                    select.value = inputData.frequency;
+                }
+            }
+        });
+
+        // Restore chart state
+        if (data.chartState) {
+            document.getElementById('generateAnalysis').classList.add('active');
+            generateAnalysis();
+        }
+
+        // Restore active tab
+        if (data.activeTab) {
+            switchTab(data.activeTab);
+        }
+    }
+}
+
 // Function to handle tab switching
 function switchTab(tabId) {
     // Update tab buttons
@@ -166,6 +215,9 @@ function switchTab(tabId) {
                 break;
         }
     }
+
+    // Save state to localStorage
+    saveToLocalStorage();
 }
 
 // Function to create budget distribution chart
@@ -487,6 +539,7 @@ function generateAnalysis() {
     createIncomeCharts();
     createExpenseCharts();
     document.getElementById('generateAnalysis').classList.add('active');
+    saveToLocalStorage();
 }
 
 // Function to create input fields for a category
@@ -731,6 +784,9 @@ function calculateBudget() {
                 break;
         }
     }
+
+    // Save data to localStorage
+    saveToLocalStorage();
 }
 
 // Initialize the calculator
@@ -763,4 +819,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add event listener for the Generate Analysis button
     document.getElementById('generateAnalysis').addEventListener('click', generateAnalysis);
+
+    // Load saved data from localStorage
+    loadFromLocalStorage();
+
+    // Add event listeners to all inputs to save on change
+    document.querySelectorAll('input[type="number"], select').forEach(input => {
+        input.addEventListener('change', saveToLocalStorage);
+    });
 }); 
