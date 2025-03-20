@@ -139,15 +139,31 @@ function saveToLocalStorage() {
     const savedData = {
         inputs: {},
         chartState: document.getElementById('generateAnalysis').classList.contains('active'),
-        activeTab: document.querySelector('.tab-button.active')?.dataset.tab || 'overview'
+        activeTab: document.querySelector('.tab-button.active')?.dataset.tab || 'overview',
+        enabledCategories: {}
     };
 
-    // Save all input values
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        savedData.inputs[input.id] = {
-            value: input.value,
-            frequency: input.closest('.input-group').querySelector('select').value
-        };
+    // Save all input values and their states
+    document.querySelectorAll('input[type="number"], select').forEach(input => {
+        const inputGroup = input.closest('.input-group');
+        if (inputGroup) {
+            const categoryId = inputGroup.closest('.category').querySelector('input[type="checkbox"]').id;
+            const fieldName = input.id;
+            
+            if (!savedData.inputs[categoryId]) {
+                savedData.inputs[categoryId] = {};
+            }
+            
+            savedData.inputs[categoryId][fieldName] = {
+                value: input.value,
+                type: input.type === 'select-one' ? input.value : input.closest('.input-group').querySelector('select').value
+            };
+        }
+    });
+
+    // Save enabled/disabled state of categories
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        savedData.enabledCategories[checkbox.id] = checkbox.checked;
     });
 
     localStorage.setItem('budgetCalculatorData', JSON.stringify(savedData));
@@ -158,16 +174,28 @@ function loadFromLocalStorage() {
     if (savedData) {
         const data = JSON.parse(savedData);
         
-        // Restore input values
-        Object.entries(data.inputs).forEach(([inputId, inputData]) => {
-            const input = document.getElementById(inputId);
-            if (input) {
-                input.value = inputData.value;
-                const select = input.closest('.input-group').querySelector('select');
-                if (select) {
-                    select.value = inputData.frequency;
-                }
+        // Restore enabled/disabled state of categories
+        Object.entries(data.enabledCategories || {}).forEach(([categoryId, isEnabled]) => {
+            const checkbox = document.getElementById(categoryId);
+            if (checkbox) {
+                checkbox.checked = isEnabled;
+                toggleCategory(`${categoryId}Fields`, checkbox);
             }
+        });
+
+        // Restore input values
+        Object.entries(data.inputs || {}).forEach(([categoryId, fields]) => {
+            Object.entries(fields).forEach(([fieldName, fieldData]) => {
+                const input = document.getElementById(fieldName);
+                const select = input?.closest('.input-group')?.querySelector('select');
+                
+                if (input) {
+                    input.value = fieldData.value;
+                }
+                if (select) {
+                    select.value = fieldData.type;
+                }
+            });
         });
 
         // Restore chart state
@@ -180,6 +208,9 @@ function loadFromLocalStorage() {
         if (data.activeTab) {
             switchTab(data.activeTab);
         }
+
+        // Calculate budget after restoring data
+        calculateBudget();
     }
 }
 
@@ -826,5 +857,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners to all inputs to save on change
     document.querySelectorAll('input[type="number"], select').forEach(input => {
         input.addEventListener('change', saveToLocalStorage);
+        input.addEventListener('input', saveToLocalStorage);
+    });
+
+    // Add event listener for checkbox changes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', saveToLocalStorage);
     });
 }); 
