@@ -1,3 +1,129 @@
+// Supabase Configuration
+const supabaseUrl = 'https://djeumwpjpcxireqohmaf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqZXVtd3BqcGN4aXJlcW9obWFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4OTYyNzEsImV4cCI6MjA1ODQ3MjI3MX0.q9hwBv033SnpsQMzZc85EY4R6YXJOke0llmZycIpCH8';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// Auth State Management
+let currentUser = null;
+
+// Function to check auth state
+async function checkAuth() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (session) {
+        currentUser = session.user;
+        showMainContent();
+        updateUserInfo();
+    } else {
+        showAuthContainer();
+    }
+}
+
+// Function to show auth container
+function showAuthContainer() {
+    document.getElementById('authContainer').classList.remove('hidden');
+    document.getElementById('mainContent').classList.add('hidden');
+}
+
+// Function to show main content
+function showMainContent() {
+    document.getElementById('authContainer').classList.add('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+}
+
+// Function to update user info
+function updateUserInfo() {
+    if (currentUser) {
+        document.getElementById('userName').textContent = `Welcome, ${currentUser.user_metadata.full_name || currentUser.email}`;
+    }
+}
+
+// Function to handle sign up
+async function handleSignUp(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('signUpEmail').value.trim();
+    const password = document.getElementById('signUpPassword').value;
+    const fullName = document.getElementById('signUpName').value.trim();
+
+    try {
+        // First, sign up the user
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName
+                }
+            }
+        });
+
+        if (authError) {
+            console.error('Auth Error:', authError);
+            throw authError;
+        }
+
+        // Set the current user and show the dashboard
+        currentUser = authData.user;
+        showMainContent();
+        updateUserInfo();
+        
+        // Show success message
+        alert('Account created successfully! Welcome to your dashboard.');
+    } catch (error) {
+        console.error('Sign up error:', error);
+        alert(error.message || 'An error occurred during sign up. Please try again.');
+    }
+}
+
+// Function to handle sign in
+async function handleSignIn(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('signInEmail').value;
+    const password = document.getElementById('signInPassword').value;
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if (error) throw error;
+
+        currentUser = data.user;
+        showMainContent();
+        updateUserInfo();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// Function to handle sign out
+async function handleSignOut() {
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        
+        currentUser = null;
+        showAuthContainer();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// Function to toggle between sign in and sign up forms
+function toggleAuthForms() {
+    const signInForm = document.getElementById('signInForm');
+    const signUpForm = document.getElementById('signUpForm');
+    const showSignUp = document.getElementById('showSignUp');
+    const showSignIn = document.getElementById('showSignIn');
+
+    signInForm.classList.toggle('hidden');
+    signUpForm.classList.toggle('hidden');
+    showSignUp.classList.toggle('hidden');
+    showSignIn.classList.toggle('hidden');
+}
+
 // Configuration object for categories
 const categories = {
     income: {
@@ -822,6 +948,35 @@ function calculateBudget() {
 
 // Initialize the calculator
 document.addEventListener('DOMContentLoaded', () => {
+    // Check auth state on page load
+    checkAuth();
+
+    // Add event listeners for auth forms
+    document.getElementById('signInForm').addEventListener('submit', handleSignIn);
+    document.getElementById('signUpForm').addEventListener('submit', handleSignUp);
+    document.getElementById('showSignUp').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAuthForms();
+    });
+    document.getElementById('showSignIn').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAuthForms();
+    });
+    document.getElementById('signOutBtn').addEventListener('click', handleSignOut);
+
+    // Listen for auth state changes
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+            currentUser = session.user;
+            showMainContent();
+            updateUserInfo();
+        } else if (event === 'SIGNED_OUT') {
+            currentUser = null;
+            showAuthContainer();
+        }
+    });
+
+    // Initialize the rest of your app
     const incomeSection = document.querySelector('.income');
     const expensesSection = document.querySelector('.expenses');
     const savingsSection = document.querySelector('.savings');
