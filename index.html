@@ -101,11 +101,78 @@
             </div>
         </div>
 
+        <!-- Analysis Dashboard section -->
+        <div class="analysis-dashboard mt-8 p-6 bg-white rounded-lg shadow-lg">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Analysis Dashboard</h2>
+                <button id="generateAnalysis" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Generate Analysis
+                </button>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="tabs mb-6">
+                <div class="tab-buttons flex space-x-4 border-b border-gray-200">
+                    <button class="tab-button active px-4 py-2 text-gray-600 hover:text-gray-900 border-b-2 border-transparent" data-tab="overview">
+                        Overview
+                    </button>
+                    <button class="tab-button px-4 py-2 text-gray-600 hover:text-gray-900 border-b-2 border-transparent" data-tab="income">
+                        Income
+                    </button>
+                    <button class="tab-button px-4 py-2 text-gray-600 hover:text-gray-900 border-b-2 border-transparent" data-tab="expenses">
+                        Expenses
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Overview Tab -->
+                <div class="tab-pane active" id="overview">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="chart-container">
+                            <h3 class="text-lg font-semibold mb-4">Budget Distribution</h3>
+                            <canvas id="budgetDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Income Tab -->
+                <div class="tab-pane hidden" id="income">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="chart-container">
+                            <h3 class="text-lg font-semibold mb-4">Income Breakdown</h3>
+                            <canvas id="incomePieChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 class="text-lg font-semibold mb-4">Income Details</h3>
+                            <canvas id="incomeBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Expenses Tab -->
+                <div class="tab-pane hidden" id="expenses">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="chart-container">
+                            <h3 class="text-lg font-semibold mb-4">Expense Breakdown</h3>
+                            <canvas id="expensePieChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3 class="text-lg font-semibold mb-4">Expense Details</h3>
+                            <canvas id="expenseBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer class="mt-8 text-center text-gray-600 text-sm">
             <p>A side project by <span class="font-medium text-gray-900">Shubham Jain</span> • 2025</p>
         </footer>
     </div>
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
